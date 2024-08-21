@@ -35,5 +35,18 @@ jobs:
       - name: Report warning for each dead domain
         run: |
           while read -r domain; do
-            echo "::warning Possibly dead domain: $domain"
+            echo "::warning::Possibly dead domain: $domain"
           done < dead-domains.txt
+
+      - name: Open an issue if there are dead domains
+        run: |
+          # If the file is not empty
+          if [ -s dead-domains.txt ]; then
+            echo "There are dead domains. Opening an issue..."
+
+            pnpm dead-domains-linter --export dead-domains.md
+            ISSUE_TITLE="Dead domains report for $(date +'%B %Y')"
+            ISSUE_BODY="Dead domains found\n\n$(cat dead-domains.md)"
+
+            gh issue create --title "$ISSUE_TITLE" --body "$ISSUE_BODY"
+          fi
