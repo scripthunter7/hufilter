@@ -41,9 +41,9 @@ jobs:
             const deadDomains = fs.readFileSync('dead-domains.txt', 'utf8').split('\n');
 
             // Add warning to the console
-            deadDomains.forEach((domain) => {
+            for (const domain of deadDomains) {
               core.warning(`Possible dead domain: ${domain}`);
-            });
+            }
 
             // Open an issue if there are dead domains
             if (deadDomains.length > 0) {
@@ -51,17 +51,18 @@ jobs:
 
               const title = `Dead domains report for ${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}`;
 
-              // Close previous issues with the same title
+              // Close previous issues which have the same title
               const { data: issues } = await github.rest.issues.listForRepo({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 state: 'open',
               });
 
-              const previousIssue = issues.find((issue) => issue.title === title);
+              const previousIssues = issues.filter((issue) => issue.title === title);
 
-              if (previousIssue) {
+              for (const previousIssue of previousIssues) {
                 console.log(`Closing previous issue #${previousIssue.number}`);
+
                 await github.rest.issues.update({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
@@ -70,6 +71,7 @@ jobs:
                 });
               }
 
+              // Create a new issue
               const { data: issue } = await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
