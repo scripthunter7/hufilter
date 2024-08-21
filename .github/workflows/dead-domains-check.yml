@@ -36,7 +36,6 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const core = require('@actions/core');
             const fs = require('fs');
 
             const deadDomains = fs.readFileSync('dead-domains.txt', 'utf8').split('\n');
