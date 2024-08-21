@@ -30,9 +30,7 @@ jobs:
         run: pnpm install
 
       - name: Run dead domains check
-        # Since hufilter does not have too many domains, we can disable the DNS check
-        # See https://github.com/AdguardTeam/DeadDomainsLinter?tab=readme-ov-file#disabling-dns-check
-        run: pnpm dead-domains-linter --dnscheck=false --export dead-domains.txt
+        run: pnpm dead-domains-linter --export dead-domains.txt
 
       - name: Report dead domains
         uses: actions/github-script@v7
@@ -51,10 +49,31 @@ jobs:
             if (deadDomains.length > 0) {
               console.log('There are possible dead domains, opening an issue...');
 
+              const title = `Dead domains report for ${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}`;
+
+              // Close previous issues with the same title
+              const { data: issues } = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+              });
+
+              const previousIssue = issues.find((issue) => issue.title === title);
+
+              if (previousIssue) {
+                console.log(`Closing previous issue #${previousIssue.number}`);
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: previousIssue.number,
+                  state: 'closed',
+                });
+              }
+
               const { data: issue } = await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: `Dead domains report for ${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}`,
+                title,
                 body: [
                   'The following domains are possibly dead:',
                   '',
@@ -69,3 +88,4 @@ jobs:
 
               console.log(`Created issue #${issue.number}`);
             }
+
