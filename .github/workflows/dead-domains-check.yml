@@ -30,7 +30,9 @@ jobs:
         run: pnpm install
 
       - name: Run dead domains check
-        run: pnpm dead-domains-linter --export dead-domains.txt
+        # Since hufilter does not have too many domains, we can disable the DNS check
+        # See https://github.com/AdguardTeam/DeadDomainsLinter?tab=readme-ov-file#disabling-dns-check
+        run: pnpm dead-domains-linter --dnscheck=false --export dead-domains.txt
 
       - name: Report dead domains
         uses: actions/github-script@v7
@@ -41,7 +43,7 @@ jobs:
             const deadDomains = fs.readFileSync('dead-domains.txt', 'utf8').split('\n');
 
             // Add warning to the console
-            deadDomains.forEach(domain => {
+            deadDomains.forEach((domain) => {
               core.warning(`Possible dead domain: ${domain}`);
             });
 
@@ -52,9 +54,17 @@ jobs:
               const { data: issue } = await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: 'Dead domains report for ' + new Date().toLocaleString('default', { month: 'long', year: 'numeric' }),
-                body: `The following domains are possibly dead:\n\n${deadDomains.join('\n')}`,
-                labels: ['dead website']
+                title: `Dead domains report for ${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}`,
+                body: [
+                  'The following domains are possibly dead:',
+                  '',
+                  '',
+                  `${deadDomains.map((domain) => `- ${domain}`).join('\n')}`,
+                  '',
+                  'Please note that this is an automated report and some low-traffic websites may be incorrectly marked as dead.',
+                  'For more information, see https://github.com/AdguardTeam/DeadDomainsLinter/blob/master/README.md',
+                ].join('\n'),
+                labels: ['dead website'],
               });
 
               console.log(`Created issue #${issue.number}`);
