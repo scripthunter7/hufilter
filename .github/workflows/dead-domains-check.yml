@@ -32,21 +32,31 @@ jobs:
       - name: Run dead domains check
         run: pnpm dead-domains-linter --export dead-domains.txt
 
-      - name: Report warning for each dead domain
-        run: |
-          while read -r domain; do
-            echo "::warning::Possibly dead domain: $domain"
-          done < dead-domains.txt
+      - name: Report dead domains
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const core = require('@actions/core');
+            const fs = require('fs');
 
-      - name: Open an issue if there are dead domains
-        run: |
-          # If the file is not empty
-          if [ -s dead-domains.txt ]; then
-            echo "There are dead domains. Opening an issue..."
+            const deadDomains = fs.readFileSync('dead-domains.txt', 'utf8').split('\n');
 
-            pnpm dead-domains-linter --export dead-domains.md
-            ISSUE_TITLE="Dead domains report for $(date +'%B %Y')"
-            ISSUE_BODY="Dead domains found\n\n$(cat dead-domains.md)"
+            // Add warning to the console
+            deadDomains.forEach(domain => {
+              core.warning(`Possible dead domain: ${domain}`);
+            });
 
-            gh issue create --title "$ISSUE_TITLE" --body "$ISSUE_BODY"
-          fi
+            // Open an issue if there are dead domains
+            if (deadDomains.length > 0) {
+              console.log('There are possible dead domains, opening an issue...');
+
+              const { data: issue } = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: 'Dead domains report for ' + new Date().toLocaleString('default', { month: 'long', year: 'numeric' }),
+                body: `The following domains are possibly dead:\n\n${deadDomains.join('\n')}`,
+                labels: ['dead website']
+              });
+
+              console.log(`Created issue #${issue.number}`);
+            }
