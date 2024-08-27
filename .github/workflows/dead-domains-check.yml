@@ -180,23 +180,25 @@ jobs:
             const branchName = '${{ steps.create-branch.outputs.branch_name }}';
             const issueNumber = ${{ steps.open-issue.outputs.issue_number }};
 
-            core.info('Getting the latest commit');
+            core.info(`Getting the latest commit of the branch ${branchName}`);
 
-            const { data: latestCommit } = await github.rest.git.getCommit({
+            const { data: latestCommit } = await github.rest.repos.getCommit({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: context.sha,
+              ref: `heads/${branchName}`,
             });
 
             core.info(`Latest commit: ${latestCommit.sha} (${latestCommit.message})`);
+
+            core.info('Creating a new commit for the automated fix');
 
             const message = `Automated dead domains fix (#${issueNumber})`;
             const { data: newCommit } = await github.rest.git.createCommit({
               owner: context.repo.owner,
               repo: context.repo.repo,
               message,
-              tree: latestCommit.tree.sha,
-              parents: [context.sha],
+              tree: latestCommit.commit.tree.sha,
+              parents: [latestCommit.sha],
             });
 
             core.info(`Commit created: ${newCommit.sha} (${message})`);
