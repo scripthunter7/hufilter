@@ -40,7 +40,7 @@ jobs:
             const { readFile } = require('fs').promises;
 
             const deadDomains = (await readFile('dead-domains.txt', 'utf8'))
-              .split('\n')
+              .split(/\r?\n/)
               .filter(Boolean);
 
             // Add warning to the console
@@ -48,7 +48,7 @@ jobs:
               core.warning(`Possible dead domain: ${domain}`);
             }
 
-            return deadDomains;
+            return deadDomains.length;
 
       - name: Close previous issue(s)
         uses: actions/github-script@v7
@@ -112,7 +112,8 @@ jobs:
             }
 
       - name: Open an issue if there are dead domains
-        if: steps.get-dead-domains.outputs.result.length > 0
+        if: steps.get-dead-domains.outputs.result > 0
+        id: open-issue
         uses: actions/github-script@v7
         with:
           script: |
@@ -143,36 +144,38 @@ jobs:
             return issue;
 
       - name: Create a new branch for the automated fix
-        if: steps.get-dead-domains.outputs.result.length > 0
+        if: steps.get-dead-domains.outputs.result > 0
         run: |
-          branch_name="fix/dead-domains-${{ steps.get-dead-domains.outputs.result.number }}"
+          branch_name="fix/dead-domains-${{ steps.open-issue.outputs.result }}"
           git checkout -b $branch_name
 
-      - name: Do automated fix
-        if: steps.get-dead-domains.outputs.result.length > 0
+      - name: Perform the automated fix
+        if: steps.get-dead-domains.outputs.result > 0
         run: |
           pnpm dead-domains-linter --auto --import dead-domains.txt
 
       - name: Commit and push the automated fix
-        if: steps.get-dead-domains.outputs.result.length > 0
+        if: steps.get-dead-domains.outputs.result > 0
         run: |
           git add dead-domains.txt
-          git commit -m "Automated dead domains fix for #${{ steps.get-dead-domains.outputs.result.number }}"
+          git commit -m "Automated dead domains fix for #${{ steps.open-issue.outputs.result }}"
           git push origin $branch_name
 
       - name: Create a pull request for the automated fix
-        if: steps.get-dead-domains.outputs.result.length > 0
+        if: steps.get-dead-domains.outputs.result > 0
         uses: actions/github-script@v7
         with:
           script: |
+            const branchName = 'fix/dead-domains-${{ steps.open-issue.outputs.result }}';
+
             const { data: pullRequest } = await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: 'Automated dead domains fix',
-              head: $branch_name,
+              head: branchName,
               base: 'main',
               body: [
-                'This is an automated pull request to fix #${{ steps.get-dead-domains.outputs.result.number }}.',
+                'This is an automated pull request to fix #${{ steps.open-issue.outputs.result }}.',
                 '',
                 'Please review the changes and merge the pull request if everything looks good.',
               ].join('\n'),
