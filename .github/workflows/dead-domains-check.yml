@@ -118,7 +118,8 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const deadDomains = core.getInput('dead_domains');
+            console.log(deadDomains);
+            const deadDomains = JSON.parse(core.getInput('dead_domains'));
             const title = 'Automated dead domains report';
             const labels = ['dead website'];
             const body = [
