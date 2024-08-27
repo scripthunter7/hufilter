@@ -159,6 +159,9 @@ jobs:
       - name: Commit and push the automated fix
         if: steps.get-dead-domains.outputs.hasDeadDomains
         run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
           git add .
           git commit -m "Automated dead domains fix for #${{ steps.open-issue.outputs.issueNumber }}"
           git push origin $branch_name
