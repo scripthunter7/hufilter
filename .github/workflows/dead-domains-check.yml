@@ -102,12 +102,21 @@ jobs:
 
               console.log(`Created issue #${issue.number}`);
 
-              // Create a new branch and commit changes there
+              // Create a new branch from master and push the changes there
               await github.rest.git.createRef({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 ref: `refs/heads/dead-domains-report-${issue.number}`,
                 sha: context.sha,
+              });
+
+              // Commit the changes to the new branch
+              await github.rest.git.createCommit({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                message: 'Remove dead domains',
+                tree: context.payload.after,
+                parents: [context.sha],
               });
 
               // Open a pull request to resolve the issue
