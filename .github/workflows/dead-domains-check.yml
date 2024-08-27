@@ -29,17 +29,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Export dead domains
+      - name: Export dead domains to a file
         run: pnpm dead-domains-linter --export dead-domains.txt
 
-      - name: Remove dead domains from the list
-        run: pnpm dead-domains-linter --auto --import dead-domains.txt
-
-      - name: Report dead domains
+      - name: Get dead domains
+        id: get-dead-domains
         uses: actions/github-script@v7
         with:
           script: |
-            const fs = require('fs');
+            const { readFile } = require('fs').promises;
 
             const deadDomains = fs.readFileSync('dead-domains.txt', 'utf8').split('\n').filter(Boolean);
 
@@ -48,37 +46,76 @@ jobs:
               core.warning(`Possible dead domain: ${domain}`);
             }
 
-            if (deadDomains.length === 0) {
-              console.log('No dead domains found.');
-              return;
-            }
+            return deadDomains;
 
-            const titlePrefix = 'Dead domains report for';
+      - name: Close previous issue(s)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = 'Automated dead domains report';
 
-            // Close previous issues which have the same title prefix
+            // Close previous issues which have the same title
             const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
             });
 
-            const previousIssues = issues.filter(issue => issue.title.startsWith(titlePrefix));
+            const previousIssues = issues.filter(issue => {
+              const isBot = issue.user.login === 'github-actions[bot]';
+
+              return issue.title === title && isBot;
+            });
 
             for (const previousIssue of previousIssues) {
-              console.log(`Closing previous issue #${previousIssue.number}`);
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: previousIssue.number,
                 state: 'closed',
               });
+
+              core.info(`Close previous issue #${previousIssue.number}`);
             }
 
-            console.log('There are possible dead domains, opening an issue...');
+      - name: Close previous pull request(s)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Close previous pull requests which have the branch name 'fix/dead-domains-<number>'
+            // and opened by github-actions[bot]
+            const { data: pullRequests } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+            });
 
-            const title = `${titlePrefix} ${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}`;
+            const previousPullRequests = pullRequests.filter(pullRequest => {
+              const branchName = pullRequest.head.ref;
+              const isAutomatedFix = branchName.startsWith('fix/dead-domains-');
+              const isBot = pullRequest.user.login === 'github-actions[bot]';
 
-            // Create a new issue
+              return isAutomatedFix && isBot;
+            });
+
+            for (const previousPullRequest of previousPullRequests) {
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: previousPullRequest.number,
+                state: 'closed',
+              });
+
+              core.info(`Close previous pull request #${previousPullRequest.number}`);
+            }
+
+      - name: Open an issue if there are dead domains
+        if: steps.get-dead-domains.outputs.result.length > 0
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = 'Automated dead domains report';
+
             const { data: issue } = await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -99,65 +136,46 @@ jobs:
               labels: ['dead website'],
             });
 
-            console.log(`Created issue #${issue.number}`);
+            core.info(`Issue #${issue.number} opened`);
 
-            // Create a new branch from the current one
-            const branchName = `fix/dead-domains-${issue.number}`;
-            console.log(`Creating a new branch ${branchName}...`);
+            return issue;
 
-            // Get the latest commit's tree SHA
-            const { data: latestCommit } = await github.rest.git.getCommit({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              commit_sha: context.sha,
-            });
+      - name: Create a new branch for the automated fix
+        if: steps.get-dead-domains.outputs.result.length > 0
+        run: |
+          branch_name="fix/dead-domains-${{ steps.get-dead-domains.outputs.result.number }}"
+          git checkout -b $branch_name
 
-            // Create the new branch
-            await github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: `refs/heads/${branchName}`,
-              sha: context.sha,
-            });
+      - name: Do automated fix
+        if: steps.get-dead-domains.outputs.result.length > 0
+        run: |
+          pnpm dead-domains-linter --auto --import dead-domains.txt
 
-            console.log(`Branch ${branchName} created.`);
+      - name: Commit and push the automated fix
+        if: steps.get-dead-domains.outputs.result.length > 0
+        run: |
+          git add dead-domains.txt
+          git commit -m "Automated dead domains fix for #${{ steps.get-dead-domains.outputs.result.number }}"
+          git push origin $branch_name
 
-            // Create a new commit with the changes
-            const { data: commit } = await github.rest.git.createCommit({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              message: `Fix dead domains reported in #${issue.number}`,
-              tree: latestCommit.tree.sha,
-              parents: [context.sha],
-            });
-
-            console.log(`Commit ${commit.sha} created.`);
-
-            // Update the branch with the new commit
-            console.log('Updating the branch with the new commit...');
-
-            await github.rest.git.updateRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: `heads/${branchName}`,
-              sha: commit.sha,
-            });
-
-            console.log('Branch updated.');
-
-            // Create a pull request
-            console.log('Creating a pull request...');
-
+      - name: Create a pull request for the automated fix
+        if: steps.get-dead-domains.outputs.result.length > 0
+        uses: actions/github-script@v7
+        with:
+          script: |
             const { data: pullRequest } = await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `Remove dead domains reported in #${issue.number}`,
-              head: branchName,
-              base: context.ref.replace('refs/heads/', ''),
+              title: 'Automated dead domains fix',
+              head: $branch_name,
+              base: 'main',
               body: [
-                `This is an automated pull request to resolve #${issue.number}.`,
-                'Please review the changes and merge the pull request if everything is correct.',
+                'This is an automated pull request to fix #${{ steps.get-dead-domains.outputs.result.number }}.',
+                '',
+                'Please review the changes and merge the pull request if everything looks good.',
               ].join('\n'),
             });
 
-            console.log(`Pull request #${pullRequest.number} created.`);
+            core.info(`Pull request #${pullRequest.number} opened`);
+
+            return pullRequest;
