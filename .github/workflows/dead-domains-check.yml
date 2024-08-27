@@ -41,11 +41,16 @@ jobs:
           script: |
             const fs = require('fs');
 
-            const deadDomains = fs.readFileSync('dead-domains.txt', 'utf8').split('\n');
+            const deadDomains = fs.readFileSync('dead-domains.txt', 'utf8').split('\n').filter(Boolean);
 
             // Add warning to the console
             for (const domain of deadDomains) {
               core.warning(`Possible dead domain: ${domain}`);
+            }
+
+            if (deadDomains.length === 0) {
+              console.log('No dead domains found.');
+              return;
             }
 
             const titlePrefix = 'Dead domains report for';
@@ -57,13 +62,10 @@ jobs:
               state: 'open',
             });
 
-            const previousIssues = issues.filter((issue) =>
-              issue.title.startsWith(titlePrefix),
-            );
+            const previousIssues = issues.filter(issue => issue.title.startsWith(titlePrefix));
 
             for (const previousIssue of previousIssues) {
               console.log(`Closing previous issue #${previousIssue.number}`);
-
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -72,63 +74,87 @@ jobs:
               });
             }
 
-            // Open an issue if there are dead domains
-            if (deadDomains.length > 0) {
-              console.log('There are possible dead domains, opening an issue...');
+            console.log('There are possible dead domains, opening an issue...');
 
-              const title = `${titlePrefix} ${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}`;
+            const title = `${titlePrefix} ${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}`;
 
-              // Create a new issue
-              const { data: issue } = await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title,
-                body: [
-                  'The following domains are possibly dead:',
-                  '',
-                  '',
-                  '<details>',
-                  '<summary>Click to expand</summary>',
-                  '',
-                  `${deadDomains.map((domain) => `- ${domain}`).join('\n')}`,
-                  '',
-                  '</details>',
-                  '',
-                  'Please note that this is an automated report and some low-traffic websites may be incorrectly marked as dead.',
-                  'For more information, see https://github.com/AdguardTeam/DeadDomainsLinter/blob/master/README.md',
-                ].join('\n'),
-                labels: ['dead website'],
-              });
+            // Create a new issue
+            const { data: issue } = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body: [
+                'The following domains are possibly dead:',
+                '',
+                '<details>',
+                '<summary>Click to expand</summary>',
+                '',
+                `${deadDomains.map(domain => `- ${domain}`).join('\n')}`,
+                '',
+                '</details>',
+                '',
+                'Please note that this is an automated report and some low-traffic websites may be incorrectly marked as dead.',
+                'For more information, see https://github.com/AdguardTeam/DeadDomainsLinter/blob/master/README.md',
+              ].join('\n'),
+              labels: ['dead website'],
+            });
 
-              console.log(`Created issue #${issue.number}`);
+            console.log(`Created issue #${issue.number}`);
 
-              // Create a new branch from master and push the changes there
-              await github.rest.git.createRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: `refs/heads/dead-domains-report-${issue.number}`,
-                sha: context.sha,
-              });
+            const { data: head } = await github.rest.git.getRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `heads/${context.ref.replace('refs/heads/', '')}`,
+            });
 
-              // Commit the changes to the new branch
-              await github.rest.git.createCommit({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                message: 'Remove dead domains',
-                tree: context.payload.after,
-                parents: [context.sha],
-              });
+            const branchName = `dead-domains-report-${issue.number}`;
+            console.log(`Creating branch ${branchName}...`);
 
-              // Open a pull request to resolve the issue
-              await github.rest.pulls.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title,
-                head: `dead-domains-report-${issue.number}`,
-                base: context.ref,
-                body: [
-                  `This is an automated pull request to resolve #${issue.number}.`,
-                  'Please review the changes and merge the pull request if everything is correct.',
-                ].join('\n'),
-              });
-            }
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/heads/${branchName}`,
+              sha: head.object.sha,
+            });
+
+            console.log(`Branch ${branchName} created.`);
+
+            // Create a new commit on the branch
+            const treeResponse = await github.rest.git.createTree({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tree: [],
+              base_tree: head.object.sha,
+            });
+
+            const commitResponse = await github.rest.git.createCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              message: 'Remove dead domains',
+              tree: treeResponse.data.sha,
+              parents: [head.object.sha],
+            });
+
+            await github.rest.git.updateRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `heads/${branchName}`,
+              sha: commitResponse.data.sha,
+            });
+
+            console.log('Commit created and branch updated.');
+
+            // Open a pull request to resolve the issue
+            await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              head: branchName,
+              base: context.ref.replace('refs/heads/', ''),
+              body: [
+                `This is an automated pull request to resolve #${issue.number}.`,
+                'Please review the changes and merge the pull request if everything is correct.',
+              ].join('\n'),
+            });
+
+            console.log('Pull request created.');
