@@ -174,7 +174,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A ':!dead-domains.txt'
+          git add -A
 
       - name: Commit and push the automated fix
         if: steps.read-dead-domains.outputs.has_dead_domains
