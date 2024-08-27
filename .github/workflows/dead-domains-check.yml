@@ -39,7 +39,9 @@ jobs:
           script: |
             const { readFile } = require('fs').promises;
 
-            const deadDomains = fs.readFileSync('dead-domains.txt', 'utf8').split('\n').filter(Boolean);
+            const deadDomains = (await readFile('dead-domains.txt', 'utf8'))
+              .split('\n')
+              .filter(Boolean);
 
             // Add warning to the console
             for (const domain of deadDomains) {
