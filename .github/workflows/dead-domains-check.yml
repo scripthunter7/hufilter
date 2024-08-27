@@ -30,7 +30,7 @@ jobs:
         run: pnpm install
 
       - name: Export dead domains to a file
-        run: pnpm dead-domains-linter --export dead-domains.txt
+        run: pnpm dead-domains-linter --export dead-domains.txt --input sections/annoyances.txt
 
       - name: Get dead domains
         id: get-dead-domains
