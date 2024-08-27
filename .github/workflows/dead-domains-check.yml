@@ -194,7 +194,7 @@ jobs:
               repo: context.repo.repo,
               message,
               tree: latestCommit.tree.sha,
-              parents: [context.sha],
+              parents: [latestCommit.sha],
             });
 
             core.info(`Commit created: ${newCommit.sha} (${message})`); 
