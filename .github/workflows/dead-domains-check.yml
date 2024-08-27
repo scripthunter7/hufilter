@@ -51,7 +51,7 @@ jobs:
             }
 
             core.setOutput('has_dead_domains', deadDomains.length > 0);
-            core.setOutput('dead_domains', deadDomains);
+            core.setOutput('dead_domains', JSON.stringify(deadDomains));
 
       - name: Close previous issue(s)
         uses: actions/github-script@v7
@@ -120,7 +120,6 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            console.log(core.getInput('dead_domains'));
             const deadDomains = JSON.parse(core.getInput('dead_domains'));
             const title = 'Automated dead domains report';
             const labels = ['dead website'];
