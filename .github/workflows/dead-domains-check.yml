@@ -179,13 +179,13 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: 'Automated dead domains fix',
-              head: ${{ steps.create-branch.outputs.branch_name }},
+              head: '${{ steps.create-branch.outputs.branch_name }}',
               base: context.ref.replace('refs/heads/', ''),
               body: [
-                'This is an automated pull request to fix #${{ steps.open-issue.outputs.issueNumber }}.',
-                '',
-                 'Please note that this is an automated fix and some low-traffic websites may be incorrectly marked as dead.',
-                'For more information, see https://github.com/AdguardTeam/DeadDomainsLinter/blob/master/README.md',
+                  'This is an automated pull request to fix #${{ steps.open-issue.outputs.issueNumber }}.',
+                  '',
+                  'Please note that this is an automated fix and some low-traffic websites may be incorrectly marked as dead.',
+                  'For more information, see https://github.com/AdguardTeam/DeadDomainsLinter/blob/master/README.md',
               ].join('\n'),
             });
 
