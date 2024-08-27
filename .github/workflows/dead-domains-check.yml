@@ -51,7 +51,7 @@ jobs:
             }
 
             core.setOutput('has_dead_domains', deadDomains.length > 0);
-            core.setOutput('dead_domains', JSON.stringify(deadDomains));
+            core.setOutput('dead_domains', deadDomains);
 
       - name: Close previous issue(s)
         uses: actions/github-script@v7
@@ -120,7 +120,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const deadDomains = JSON.parse(core.getInput('dead_domains'));
+            const deadDomains = JSON.parse(${{ toJson(steps.get-dead-domains.outputs.dead_domains) }});
             const title = 'Automated dead domains report';
             const labels = ['dead website'];
             const body = [
@@ -154,7 +154,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const issueNumber = core.getInput('issue_number');
+            const issueNumber = ${{ steps.open-issue.outputs.issue_number }};
             const branchName = `fix/dead-domains-${issueNumber}`;
 
             const { data: ref } = await github.rest.git.createRef({
@@ -177,8 +177,8 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const branchName = core.getInput('branch_name');
-            const issueNumber = core.getInput('issue_number');
+            const branchName = ${{ steps.create-branch.outputs.branch_name }};
+            const issueNumber = ${{ steps.open-issue.outputs.issue_number }};
 
             const { data: latestCommit } = await github.rest.git.getCommit({
               owner: context.repo.owner,
@@ -217,10 +217,10 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: 'Automated dead domains fix',
-              head: core.getInput('branch_name'),
+              head: ${{ steps.create-branch.outputs.branch_name }},
               base: context.ref.replace('refs/heads/', ''),
               body: [
-                  `This is an automated pull request to fix #${core.getInput('issue_number')}.`,
+                  'This is an automated pull request to fix #${{ steps.open-issue.outputs.issue_number }}.',
                   '',
                   'Please note that this is an automated fix and some low-traffic websites may be incorrectly marked as dead.',
                   'For more information, see https://github.com/AdguardTeam/DeadDomainsLinter/blob/master/README.md',
