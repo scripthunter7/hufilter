@@ -180,6 +180,8 @@ jobs:
             const branchName = '${{ steps.create-branch.outputs.branch_name }}';
             const issueNumber = ${{ steps.open-issue.outputs.issue_number }};
 
+            core.info('Getting the latest commit');
+
             const { data: latestCommit } = await github.rest.git.getCommit({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -194,16 +196,16 @@ jobs:
               repo: context.repo.repo,
               message,
               tree: latestCommit.tree.sha,
-              parents: [latestCommit.sha],
+              parents: [context.sha],
             });
 
-            core.info(`Commit created: ${newCommit.sha} (${message})`); 
+            core.info(`Commit created: ${newCommit.sha} (${message})`);
 
             await github.rest.git.updateRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: `heads/${branchName}`,
-              sha: latestCommit.sha,
+              sha: newCommit.sha,
             });
 
             core.info('Branch updated');
