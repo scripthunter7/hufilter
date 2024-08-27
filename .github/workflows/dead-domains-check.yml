@@ -120,7 +120,7 @@ jobs:
           script: |
             const title = 'Automated dead domains report';
 
-            const deadDomains = JSON.parse(core.getInput('steps.get-dead-domains.outputs.deadDomains'));
+            const deadDomains = JSON.parse(${{ toJson(steps.get-dead-domains.outputs.deadDomains) }});
 
             const { data: issue } = await github.rest.issues.create({
               owner: context.repo.owner,
