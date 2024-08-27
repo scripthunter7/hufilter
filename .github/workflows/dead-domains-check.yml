@@ -5,8 +5,8 @@ env:
 
 on:
   schedule:
-    # Run the job at the first Monday of each month at 8:00 UTC
-    - cron: '0 8 1-7 * 1'
+    # Run the job on every Monday at 8:00 AM UTC
+    - cron: '0 8 * * 1'
   workflow_dispatch:
 
 jobs:
@@ -30,9 +30,7 @@ jobs:
         run: pnpm install
 
       - name: Export dead domains to a file
-        # run: pnpm dead-domains-linter --export dead-domains.txt --input sections/annoyances.txt
-        run: |
-          echo "azonnali.hu" > dead-domains.txt
+        run: pnpm dead-domains-linter --export dead-domains.txt --input sections/annoyances.txt
 
       - name: Get dead domains
         id: get-dead-domains
@@ -122,31 +120,29 @@ jobs:
           script: |
             const deadDomains = JSON.parse(${{ toJson(steps.get-dead-domains.outputs.dead_domains) }});
             const title = 'Automated dead domains report';
-            const labels = ['dead website'];
-            const body = [
-              'The following domains are possibly dead:',
-              '',
-              '<details>',
-              '<summary>Click to expand</summary>',
-              '',
-              `${deadDomains.map(domain => `- ${domain}`).join('\n')}`,
-              '',
-              '</details>',
-              '',
-              'Please note that this is an automated report and some low-traffic websites may be incorrectly marked as dead.',
-              'For more information, see https://github.com/AdguardTeam/DeadDomainsLinter/blob/master/README.md',
-            ].join('\n');
 
             const { data: issue } = await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title,
-              body,
-              labels,
+              body: [
+                'The following domains are possibly dead:',
+                '',
+                '<details>',
+                '<summary>Click to expand</summary>',
+                '',
+                `${deadDomains.map(domain => `- ${domain}`).join('\n')}`,
+                '',
+                '</details>',
+                '',
+                'Please note that this is an automated report and some low-traffic websites may be incorrectly marked as dead.',
+                'For more information, see https://github.com/AdguardTeam/DeadDomainsLinter/blob/master/README.md',
+              ].join('\n'),
+              labels: ['dead website'],
             });
 
             core.setOutput('issue_number', issue.number);
-            core.info(`Issue #${issue.number} opened`);
+            core.info(`Issue #${issue.number} opened (${title})`);
 
       - name: Create a new branch for the automated fix
         if: steps.get-dead-domains.outputs.has_dead_domains
@@ -188,7 +184,7 @@ jobs:
               ref: `heads/${branchName}`,
             });
 
-            core.info(`Latest commit: ${latestCommit.sha} (${latestCommit.message})`);
+            core.info(`Latest commit: ${latestCommit.sha} (${latestCommit.commit.message})`);
 
             core.info('Creating a new commit for the automated fix');
 
@@ -224,10 +220,10 @@ jobs:
               head: '${{ steps.create-branch.outputs.branch_name }}',
               base: context.ref.replace('refs/heads/', ''),
               body: [
-                  'This is an automated pull request to fix #${{ steps.open-issue.outputs.issue_number }}.',
-                  '',
-                  'Please note that this is an automated fix and some low-traffic websites may be incorrectly marked as dead.',
-                  'For more information, see https://github.com/AdguardTeam/DeadDomainsLinter/blob/master/README.md',
+                'This is an automated pull request to fix #${{ steps.open-issue.outputs.issue_number }}.',
+                '',
+                'Please note that this is an automated fix and some low-traffic websites may be incorrectly marked as dead.',
+                'For more information, see https://github.com/AdguardTeam/DeadDomainsLinter/blob/master/README.md',
               ].join('\n'),
             });
 
