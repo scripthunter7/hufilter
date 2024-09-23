@@ -695,9 +695,6 @@ life.hu###top
 life.hu##div.article-recommendation-zones
 life.hu##DIV[class*="etarget"]
 life.hu##div[class$="widget"]
-lifemagazin.hu##[class*="banner"]
-lifemagazin.hu##[id*="banner"]
-lifemagazin.hu###page-top
 liked.hu##.cikkhirdetes
 liked.hu##.hirdetes
 liked.hu##.sticky1hirdet
@@ -1310,7 +1307,6 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||lapok.hu/felso/felso.php
 ||libri.hu/export/prodBann/
 ||libri.hu/html/images/skin/$image
-||lifemagazin.hu/ads/
 ||lolmarkt.hu/banner/$image
 ||love.hu/design/*hirdetes*.
 ||magyar-elektronika.hu/images/banners/$image
