@@ -736,7 +736,6 @@ magyarszo.com##[class*="reklam"]
 magyarszo.com##[id*="reklam"]
 mainap.hu##[class*="banner"]
 mandiner.hu##.real-estate-wrapper
-manus.hu##[class*="articleBanner"]
 marmalade.hu##[class*="Banner"]
 maszol.ro###article > section > div:not(.article_content)
 mavcsoport.hu###cboxOverlay
@@ -1228,7 +1227,6 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 
 ||444.hu/*/ease/
 ||ado.hu/banners/$image
-||ads.nepszava.com^
 ||affiliate.hu$subdocument
 ||affiliation.arukereso.hu/pbox/
 ||alfahir.hu^*/hirdetesfoto/$image
