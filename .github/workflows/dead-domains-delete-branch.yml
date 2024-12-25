@@ -1,3 +1,5 @@
+name: Automatic branch deletion after closing dead domains PR
+
 on:
   pull_request:
       types:
@@ -7,7 +9,7 @@ jobs:
   delete-branch:
     # Only run if PR title starts with 'Automated dead domains fix'
     if: startsWith(github.event.pull_request.title, 'Automated dead domains fix')
-    name: Delete dead domains branch after PR merge
+    name: Automated branch deletion
     runs-on: ubuntu-latest
     steps:
       - name: Delete branch
