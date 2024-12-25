@@ -48,24 +48,22 @@ jobs:
             const fs = require('fs/promises');
             const path = require('path');
 
-            const contributors = JSON.parse(process.env.CONTRIBUTORS);
+            const bots = new Set(['dependabot[bot]', 'github-actions[bot]', 'hufilterbot']);
 
-            const realContributors = contributors.filter(({ name }) => {
-              return name !== 'dependabot[bot]' && name !== 'hufilterbot';
-            });
+            const contributors = JSON.parse(process.env.CONTRIBUTORS).filter(({ name }) => !bots.has(name));
 
             const packageJsonPath = path.join(process.cwd(), 'package.json');
             const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
 
             const existingContributors = new Set(packageJson.contributors || []);
 
-            realContributors.forEach(({ name, url }) => {
+            contributors.forEach(({ name, url }) => {
               existingContributors.add(`${name} (${url})`);
             });
 
             packageJson.contributors = Array.from(existingContributors).sort();
 
-            await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
+            await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n');
             core.info('Updated contributors field in package.json');
 
       - name: Commit changes, if any
