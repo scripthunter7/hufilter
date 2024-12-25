@@ -48,8 +48,10 @@ jobs:
             const fs = require('fs/promises');
             const path = require('path');
 
-            const contributors = JSON.parse(process.env.CONTRIBUTORS).filter((contributor) => {
-              return !contributor.startsWith('hufilterbot') && !contributor.startsWith('dependabot');
+            const contributors = JSON.parse(process.env.CONTRIBUTORS);
+
+            const realContributors = contributors.filter(({ name }) => {
+              return name !== 'dependabot[bot]' && name !== 'hufilterbot';
             });
 
             const packageJsonPath = path.join(process.cwd(), 'package.json');
@@ -57,7 +59,7 @@ jobs:
 
             const existingContributors = new Set(packageJson.contributors || []);
 
-            contributors.forEach(({ name, url }) => {
+            realContributors.forEach(({ name, url }) => {
               existingContributors.add(`${name} (${url})`);
             });
 
