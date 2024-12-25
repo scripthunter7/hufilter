@@ -84,6 +84,13 @@ jobs:
 
               core.info(`Closing issue #${issueNumber}`);
 
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body: 'This issue was closed because the related PR was closed without merging.',
+              });
+
               await github.rest.issues.update({
                 owner,
                 repo,
