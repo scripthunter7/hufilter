@@ -1,4 +1,4 @@
-name: Automatic branch deletion after closing dead domains PR
+name: Automatic branch deletion after closing a dead domains PR
 
 on:
   pull_request:
@@ -7,8 +7,9 @@ on:
 
 jobs:
   delete-branch:
-    # Only run if PR title starts with 'Automated dead domains fix'
-    if: startsWith(github.event.pull_request.title, 'Automated dead domains fix')
+    if: >
+      ${{ startsWith(github.event.pull_request.title, 'Automated dead domains fix') &&
+          startsWith(github.event.pull_request.head.ref, 'fix/dead-domains-') }}
     name: Automated branch deletion
     runs-on: ubuntu-latest
     steps:
@@ -18,14 +19,10 @@ jobs:
           script: |
             const branchName = context.payload.pull_request.head.ref;
 
-            if (branchName.startsWith('fix/dead-domains-')) {
-              await github.rest.git.deleteRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: `heads/${branchName}`,
-              });
+            await github.rest.git.deleteRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `heads/${branchName}`,
+            });
 
-              core.info(`Deleted branch ${branchName}`);
-            } else {
-              core.info(`Branch ${branchName} is not an automated fix branch. Skipping deletion.`);
-            }
+            core.info(`Deleted branch ${branchName}`);
