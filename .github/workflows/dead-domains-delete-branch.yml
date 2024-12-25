@@ -19,10 +19,10 @@ jobs:
           script: |
             const branchName = context.payload.pull_request.head.ref;
 
-            await github.rest.git.deleteRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: `heads/${branchName}`,
-            });
+            // await github.rest.git.deleteRef({
+            //   owner: context.repo.owner,
+            //   repo: context.repo.repo,
+            //   ref: `heads/${branchName}`,
+            // });
 
             core.info(`Deleted branch ${branchName}`);
