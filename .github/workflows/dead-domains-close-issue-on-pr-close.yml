@@ -1,0 +1,76 @@
+name: Automatic issue closing after closing a dead domains PR
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  close-issue:
+    if: >
+      ${{ startsWith(github.event.pull_request.title, 'Automated dead domains fix') &&
+          startsWith(github.event.pull_request.head.ref, 'fix/dead-domains-') &&
+          github.event.pull_request.merged == false }}
+    name: Close related issue
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch linked issues
+        id: fetch-linked-issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+
+            // Get timeline events for the PR to find linked issues
+            const { data: events } = await github.rest.issues.listEventsForTimeline({
+              owner,
+              repo,
+              issue_number: prNumber,
+              per_page: 100,
+            });
+
+            const linkedIssues = events
+              .filter(event => event.event === 'referenced' && event.source?.issue?.number)
+              .map(event => event.source.issue.number);
+
+            core.info(`Linked issues found: ${linkedIssues.join(', ')}`);
+            core.setOutput('linked_issues', linkedIssues);
+
+      - name: Close linked issues
+        if: steps.fetch-linked-issues.outputs.linked_issues != '[]'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const linkedIssues = JSON.parse(core.getInput('linked_issues'));
+
+            if (linkedIssues.length === 0) {
+              core.info('No linked issues found.');
+            } else {
+              const { owner, repo } = context.repo;
+
+              for (const issueNumber of linkedIssues) {
+                // Issue title should be 'Automated dead domains report' and should be opened by github-actions[bot]
+                const { data: issue } = await github.rest.issues.get({
+                  owner,
+                  repo,
+                  issue_number: issueNumber,
+                });
+
+                if (issue.title !== 'Automated dead domains report' || issue.user.login !== 'github-actions[bot]') {
+                  core.info(`Issue #${issueNumber} is probably not related to dead domains report, please check manually.`);
+                  continue;
+                }
+
+                core.info(`Closing issue #${issueNumber}`);
+
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: issueNumber,
+                  state: 'closed',
+                });
+
+                core.info(`Successfully closed issue #${issueNumber}`);
+              }
+            }
