@@ -1472,3 +1472,6 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||tripod.com^$third-party
 ||tripod.lycos.com^$third-party
 ||tulajdonostol.com^$third-party
+
+! non-existent domain
+||jhdfsjkhfdskjfsdfdshjsdf.hu^
