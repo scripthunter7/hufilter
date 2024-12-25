@@ -9,7 +9,7 @@ jobs:
   handle-keep-comment:
     if: >
       ${{ github.event.issue.pull_request &&
-           startsWith(github.event.comment.body, '@keep') &&
+           startsWith(github.event.comment.body, 'keep') &&
            startsWith(github.event.issue.title, 'Automated dead domains fix') &&
            startsWith(github.event.issue.pull_request.head.ref, 'fix/dead-domains-') }}
     name: Revert changes for specified domains
@@ -25,19 +25,21 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            // Parse the comment to extract the domains (e.g., "@keep example.com, example.org")
-            const domains = context.payload.comment.body.match(/^@keep (.*)/)[1]
+            // Parse the comment to extract the domains (e.g., "keep example.com, example.org")
+            const domains = context.payload.comment.body.match(/^keep (.*)/)[1]
               .split(',')
               .map((domain) => domain.trim());
             core.info(`Domains to keep: ${domains}`);
-            core.setOutput('keep_domains', JSON.stringify(domains));
+            core.setOutput('keep_domains', domains);
 
       - name: Revert changes for the specified domains
         id: revert-changes
         uses: actions/github-script@v7
         with:
           script: |
-            const keepDomains = JSON.parse(core.getInput('keep_domains'));
+            // FIXME
+            const keepDomains = JSON.parse(${{ toJson(steps.extract-domains.outputs.keep_domains) }});
+            # const keepDomains = JSON.parse(core.getInput('keep_domains'));
 
             const { data: files } = await github.rest.pulls.listFiles({
               owner: context.repo.owner,
