@@ -224,7 +224,7 @@ jobs:
 
       - name: Upload dead-domains.txt as an artifact
         if: steps.read-dead-domains.outputs.has_dead_domains == 'true'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ github.ref_name }}-dead-domains
           path: dead-domains.txt
