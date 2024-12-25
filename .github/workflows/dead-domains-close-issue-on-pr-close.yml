@@ -60,7 +60,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const linkedIssues = JSON.parse(core.getInput('linked_issues'));
+            const linkedIssues = JSON.parse(${{ toJson(steps.fetch-linked-issues.outputs.linked_issues) }});
 
             if (linkedIssues.length === 0) {
               core.info('No linked issues found.');
