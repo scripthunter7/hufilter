@@ -593,7 +593,6 @@ joy.hu##[class^="ad-"]
 joy.hu##[class^="adIn"]
 joy.hu##[class^="adPlace"]
 joy.hu###joylike
-kakukk.ro##[id*="banner"]
 kalohirek.hu##[class*="banner"]
 kalohirek.hu##[id*="banner"]
 kamaszpanasz.hu##[class*="banner"]
@@ -820,7 +819,6 @@ napiszar.hu##[class*="banner"]
 napiszex.hu##.banner
 napiszex.hu##.banner-bottom
 napiszex.hu##.list-item.has-banner
-napiuzlet.com##[class*="advertisement"]
 ncore.pro##.banner
 nemkutya.com##[class^="ad-"]
 nemkutya.com###text-3
@@ -964,8 +962,6 @@ sielok.hu##[id*="AdWrap"]
 sonline.hu##[class*="hirdetes"]
 sonline.hu##[id*="ctnet_ad_"]
 sonline.hu##div[class*="ad "]
-sorozataddict.hu###cboxOverlay
-sorozataddict.hu###colorbox
 sorozatwiki.hu##[class*="-ad-"]
 sorozatwiki.hu###fragment
 sporthirado.hu##[class*="banner"]
@@ -1323,7 +1319,6 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||napidroid.hu/*/*logo$image
 ||napocska.hu/images/*_advert*.$image
 ||net-solutions.hu/banner/$image
-||new-game-everyday.online^$popup
 ||noplaza.hu/banner/$image
 ||nso.hu/*/sponsoration/*.
 ||okmanyiroda.hu/banner.html
@@ -1412,7 +1407,6 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||media.netpositive.hu^
 ||netadclick.com^
 ||netexs.com^
-||new-bigpenn.com^
 ||pixel.blog.hu^
 ||pixel.sojern.com^
 ||rc.rc.hu^
@@ -1474,4 +1468,3 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||tulajdonostol.com^$third-party
 
 ! non-existent domain
-||jhdfsjkhfdskjfsdfdshjsdf.hu^
