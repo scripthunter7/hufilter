@@ -820,7 +820,6 @@ napiszar.hu##[class*="banner"]
 napiszex.hu##.banner
 napiszex.hu##.banner-bottom
 napiszex.hu##.list-item.has-banner
-napiuzlet.com##[class*="advertisement"]
 ncore.pro##.banner
 nemkutya.com##[class^="ad-"]
 nemkutya.com###text-3
@@ -964,8 +963,6 @@ sielok.hu##[id*="AdWrap"]
 sonline.hu##[class*="hirdetes"]
 sonline.hu##[id*="ctnet_ad_"]
 sonline.hu##div[class*="ad "]
-sorozataddict.hu###cboxOverlay
-sorozataddict.hu###colorbox
 sorozatwiki.hu##[class*="-ad-"]
 sorozatwiki.hu###fragment
 sporthirado.hu##[class*="banner"]
@@ -1323,7 +1320,6 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||napidroid.hu/*/*logo$image
 ||napocska.hu/images/*_advert*.$image
 ||net-solutions.hu/banner/$image
-||new-game-everyday.online^$popup
 ||noplaza.hu/banner/$image
 ||nso.hu/*/sponsoration/*.
 ||okmanyiroda.hu/banner.html
@@ -1333,7 +1329,6 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||pcpult.hu/*/banner/$image
 ||pcworld.hu/bannerek/$image
 ||piacesprofit.hu/files/skin/$image
-||pornolize.com/*?clickTAG=
 ||port-network.com/sponsoration_elements/
 ||portfolio.hu/img/partner/$image
 ||preissuchmaschine.de/banner/$image
@@ -1399,7 +1394,6 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||avatraffic.com^
 ||banner.webtar.hu^
 ||bannerzone.agroinform.hu^
-||brostraffic.com^
 ||campaign-remp.444.hu^
 ||cdn-dynamic.optimonk.com^
 ||daserver.ultraweb.hu^
@@ -1412,7 +1406,6 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||media.netpositive.hu^
 ||netadclick.com^
 ||netexs.com^
-||new-bigpenn.com^
 ||pixel.blog.hu^
 ||pixel.sojern.com^
 ||rc.rc.hu^
@@ -1435,7 +1428,6 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||ad4mat.net^$third-party
 ||adfox.ru^$third-party
 ||ads.sg.hu^$third-party
-||ads.ventivmedia.com^$third-party
 ||advantage.as^$third-party
 ||advertshot.ru^$third-party
 ||affiliate.hu^$third-party
@@ -1474,4 +1466,3 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||tulajdonostol.com^$third-party
 
 ! non-existent domain
-||jhdfsjkhfdskjfsdfdshjsdf.hu^
