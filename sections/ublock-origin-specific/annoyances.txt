@@ -9,7 +9,6 @@
 !------ Specific cosmetic filters ----------------------------------------------!
 !-------------------------------------------------------------------------------!
 egeszsegkalauz.hu##^script:has-text(Quantcast Choice)
-filmvilag.me##^script:has-text(ShadowRoot)
 gamer.hu##^script:has-text(cli_cookiebar_)
 ! https://github.com/hufilter/hufilter/issues/8
 napiszar.com##^script[data-cfasync="false"]
@@ -46,4 +45,3 @@ hetek.hu##[class="modal-backdrop fade show"]
 hetek.hu###nyeremenyModal
 kektura.hu###cookie-consent-dialog
 ! https://github.com/hufilter/hufilter/issues/11
-filmvilag.me##[style]:has(.adslot_1)
