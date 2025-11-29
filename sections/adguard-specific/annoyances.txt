@@ -10,7 +10,6 @@
 !-------------------------------------------------------------------------------!
 bme.hu,unideb.hu$$style[tag-content="eu-cookie-withdraw-banner"]
 egeszsegkalauz.hu$$script[tag-content="Quantcast Choice"]
-filmvilag.me$$script[tag-content="ShadowRoot"]
 gamer.hu$$script[tag-content="cli_cookiebar_"]
 ! https://github.com/hufilter/hufilter/issues/8
 napiszar.com$$script[data-cfasync="false"]
@@ -60,7 +59,6 @@ mandiner.hu##.modal[role="dialog"]
 hetek.hu##[class="modal-backdrop fade show"]
 hetek.hu###nyeremenyModal
 ! https://github.com/hufilter/hufilter/issues/11
-filmvilag.me##[style]:has(.adslot_1)
 otpportalok.hu###pop_1:has(> .suti)
 bme.hu###floating-logo-container
 unideb.hu##.sendi-banner-block-container

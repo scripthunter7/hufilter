@@ -376,7 +376,6 @@ figyelo.hu##[class*="adbox"]
 figyelo.hu##[class*="banner"]
 filmoldal.hu##div[class*="reklam"]
 ! https://github.com/hufilter/hufilter/issues/11
-filmvilag.me##[href^="https://rosszlanyok.hu/"]
 foodora.hu##.partnership-ads
 forbes.hu##div[id^="forbesad"]
 forbes.hu##p + [class*="-bekezdes-utan-"]
@@ -735,7 +734,6 @@ magyarnemzet.hu###block-block-19
 magyarnemzet.hu##div.promo-bar
 magyarszo.com##[class*="reklam"]
 magyarszo.com##[id*="reklam"]
-mainap.hu##[class*="banner"]
 mandiner.hu##.real-estate-wrapper
 marmalade.hu##[class*="Banner"]
 maszol.ro###article > section > div:not(.article_content)
@@ -783,11 +781,6 @@ mobilarena.hu##[class*="adtext"]
 moly.hu##[class*="banner"]
 motorrevu.hu##[class*="hirdetes"]
 ! https://github.com/hufilter/hufilter/issues/314
-mozinet.me###adserving-tag-hb
-mozinet.me###pa_sticky_ad_box_middle_left
-mozinet.me##.abh
-mozinet.me##a[href="javascript:void(0);"][onclick^="window.open"]
-mozinet.me##iframe[id^="postbid_if_"]
 mozinezo.hu###header
 mozishop.hu##.om-holder
 muhelynet.hu###exposeMask
@@ -851,9 +844,9 @@ offline.hu##.ads
 olcsobbat.hu##[class*="Advert"]
 olcsobbat.hu##[id*="hirdetes"]
 olcsobbat.hu###datasheetNavHelp
-online-filmek.ac,online-filmek.me###azidodetpazarlod
-online-filmek.ac,online-filmek.me##.ad_mrg
-online-filmek.ac,online-filmek.me##.details-main-panel + span
+online-filmek.me###azidodetpazarlod
+online-filmek.me##.ad_mrg
+online-filmek.me##.details-main-panel + span
 onlinecegjegyzek.hu##[class*="hirdetes"]
 ! https://github.com/hufilter/hufilter/issues/254
 onroad.hu##.highlighted-banner
@@ -1016,12 +1009,6 @@ szeretlekmagyarorszag.hu##[class^="ads_"] + .clear
 szeretlekmagyarorszag.hu###hatterkep
 szervuszausztria.hu##[class^="ads"]
 szervuszausztria.hu##[id*="etarget"]
-szoftverbazis.hu##.ad-wrap-100
-szoftverbazis.hu##.jobb_300
-szoftverbazis.hu##[class*="banner"]
-szoftverbazis.hu###ac
-szoftverbazis.hu###ecom_pr
-szoftverbazis.hu###magnum
 szoljon.hu##[class*="google-cikk"]
 szoljon.hu##[class*="hirdetes"]
 sztaki.hu###magnum
@@ -1267,7 +1254,6 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||femcafe.hu/*/sponsoration/
 ||femcafe.hu/*/szponzoracio/
 ||femcafe.hu/spike-ad/
-||filmvilag.me/*.gif$image
 ||fototrend.hu/design/hatter.jpg$image
 ||freeweb.hu/*_banner*.$image
 ||gamepod.hu/ajanlo/lapcsalad.html$subdocument
@@ -1381,7 +1367,6 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||ad.kapos.hu^
 ||ad.love.hu^
 ||ad.napilapcsoport.hu^
-||ad.onadozo.hu^
 ||ad.parom.hu^
 ||ad.pphungary.hu^
 ||ad.szexneked.hu^
@@ -1400,11 +1385,9 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||avatraffic.com^
 ||banner.webtar.hu^
 ||bannerzone.agroinform.hu^
-||brostraffic.com^
 ||campaign-remp.444.hu^
 ||cdn-dynamic.optimonk.com^
 ||daserver.ultraweb.hu^
-||et.twyn.com^
 ||etargetnet.*.hu^
 ||fourtwentytradingcompany.net^
 ||fruitflan.com^
@@ -1437,7 +1420,6 @@ ugytudjuk.hu#?#.row:-abp-has(.mainTopBnr)
 ||ad4mat.net^$third-party
 ||adfox.ru^$third-party
 ||ads.sg.hu^$third-party
-||ads.ventivmedia.com^$third-party
 ||advantage.as^$third-party
 ||advertshot.ru^$third-party
 ||affiliate.hu^$third-party
