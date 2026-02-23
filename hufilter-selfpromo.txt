@@ -1,0 +1,102 @@
+[Adblock Plus 2.0]
+! Checksum: LEq281SsKr5CbxRjHzk2aA
+! Version: 202602231416
+! Title: Hufilter Self-promotions
+! Last modified: 23 Feb 2026 14:16 UTC
+! Expires: 1 days (update frequency)
+! Homepage: https://hufilter.hu
+! Licence: CC-BY, see https://creativecommons.org/licenses/by/4.0/
+!
+!---------------------------------------------------------------------------!
+!-------------- Description, Terms of use, Issue management ----------------!
+!---------------------------------------------------------------------------!
+! Hufilter - The Hungarian Adblock List
+! Author: Hufilter Contributors (https://github.com/hufilter/hufilter/graphs/contributors)
+!
+! Please report any unblocked adverts or problems in the GitHub issue tracker.
+! About filter policy and usage terms please see the homepage above.
+! By using the filter you automatically accept the terms of use.
+!
+! Kerjuk, jelentsd a nem blokkolt hirdeteseket vagy a hibakat a GitHub issue trackerben.
+! A szuresi iranyelveket, felhasznalasi felteteleket lasd a fenti honlapon.
+! A szuro hasznalataval automatikusan elfogadod a felhasznalasi felteteleket.
+!
+! GitHub issues: https://github.com/hufilter/hufilter/issues
+! GitHub pull requests: https://github.com/hufilter/hufilter/pulls
+!
+! This section file contains rules for blocking self-promotion and donation requests.
+! The rules in this section should be compatible with all popular adblockers (Adblock Plus, AdGuard, uBlock Origin).
+!-------------------------------------------------------------------------------!
+!------ Specific cosmetic filters ----------------------------------------------!
+!-------------------------------------------------------------------------------!
+! Donate box
+112press.hu###right > .box + .box
+24.hu##.m-donationBottomLine
+24.hu##[class*=szponzibox]
+24.hu##[id^="remp-banner-"]
+ado.hu###custom_html-8
+ado.hu##a[href^="https://bit.ly"]
+alza.hu##.info-message
+alza.hu##.ear
+alza.hu##.private-labels
+alza.hu##.trust-bubble--hungary
+alza.hu##[class^="brandingEars"]
+automotor.hu##[data-foo="cikk_jobbhasab_"]
+automotor.hu##[data-foo="fooldali_jobbhasab_"]
+bestmarkt.hu##.ddModal
+blikk.hu##.google-news
+blikk.hu##.basicCreative.blockWrapper
+bookline.hu##.l-container--full
+bookline.hu##a.c-skin--left
+bookline.hu##a.c-skin--right
+drogriporter.hu###custom_html-18
+drogriporter.hu###custom_html-20
+hang.hu##.widget-tamogatas-box
+! https://github.com/hufilter/hufilter/issues/252
+infostart.hu##.article>.live-wrapper
+ingatlan.com##.estimate-promo-closable
+magyarnarancs.hu##.d-lg-block.d-none.position-relative.ujsag-wrapper.container > .ujsag
+magyarnarancs.hu##.bg-yellow.text-left
+magyarnarancs.hu##[href^="https://magyarnarancs.us7.list-manage.com/subscribe"]
+magyarnarancs.hu##.text-box
+mandiner.hu##.subscription-box
+mandiner.hu##man-header-magazine
+mandiner.hu##man-newsletter-diverter-card
+napiszex.hu###logo + .partner
+ncore.pro###pager_top > .premium
+! https://github.com/hufilter/hufilter/issues/254
+onroad.hu##a[href="https://onroad.hu/tamogatas"]
+origo.hu##app-article-page app-sidebar origo-branding-box
+origo.hu##app-article-page app-sidebar origo-newsletter-box
+origo.hu##app-article-page app-sidebar origo-social-media-box
+origo.hu##app-sport-article-page app-sidebar origo-branding-box
+origo.hu##app-sport-article-page app-sidebar origo-newsletter-box
+origo.hu##app-sport-article-page app-sidebar origo-social-media-box
+origo.hu##origo-newsletter-box
+pestisracok.hu###head-wrap + .code-block
+pestisracok.hu##.wprt-container a[href="https://www.facebook.com/pestisracok.pstv"]
+! Article recommender in the forum
+prohardver.hu,mobilarena.hu,logout.hu,hardverapro.hu##.msg-list > ul > div:not(.media)
+prohardver.hu,mobilarena.hu,logout.hu,hardverapro.hu#?#div:-abp-has(> h4:-abp-contains(/(Hirdetés|[Hh].*i.*r.*d.*e.*t.*é.*s)/)):-abp-has(a[href*="/fiok/premium.php"])
+prohardver.hu,mobilarena.hu,logout.hu,hardverapro.hu###header-network > li:has(a[href*="/fiok/premium.php"])
+telex.hu###minutes-campaign-container
+telex.hu###minutes-campaign-container-mini
+telex.hu##.fb-box
+telex.hu##.kari
+telex.hu##.modal--overlay
+telex.hu##.modal--tax
+telex.hu##.support
+telex.hu##.support-box
+telex.hu##.support-link
+telex.hu##.tax-widget
+telex.hu##.telex-donate
+telex.hu##.telex-links
+telex.hu###article-endbox-campaign-content
+telex.hu##campaign-container
+totalcar.hu###bannerHeaderLink
+tudatosvasarlo.hu##.adlanes
+tudatosvasarlo.hu##.hi-ftamogass
+tudatosvasarlo.hu##.hi-header-tamogass
+tudatosvasarlo.hu##.hi-tamogass-banner
+vezess.hu##.katalog
+vezess.hu##.wpb_wrapper > a
