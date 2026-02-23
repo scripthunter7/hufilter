@@ -234,7 +234,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           directory: ./hufilter-gh-pages
-          github_token: ${{ secrets.API_TOKEN_GITHUB }}
+          github_token: ${{ github.token }}
           branch: gh-pages
           force: true
 
