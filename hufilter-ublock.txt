@@ -1,8 +1,8 @@
 [uBlock Origin]
-! Checksum: vQnynlH9WYTQpCXQu+8F7A
-! Version: 202602231416
+! Checksum: 9bpAs3nAl8YTm65uBy7APA
+! Version: 202602231423
 ! Title: Hufilter for uBO
-! Last modified: 23 Feb 2026 14:16 UTC
+! Last modified: 23 Feb 2026 14:23 UTC
 ! Expires: 1 days (update frequency)
 ! Homepage: https://hufilter.hu
 ! Licence: CC-BY, see https://creativecommons.org/licenses/by/4.0/
@@ -29,7 +29,7 @@
 !-------------------------------------------------------------------------------!
 !------ Generic cosmetic filters -----------------------------------------------!
 !-------------------------------------------------------------------------------!
-##.ad__mainaaaa
+##.ad__mainaaaaa
 ##.adblokk
 ##.cikk_reklam
 ##.cikk-reklam

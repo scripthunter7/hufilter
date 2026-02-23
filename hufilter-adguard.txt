@@ -1,8 +1,8 @@
 [AdGuard]
-! Checksum: doxWDNXoG1B3Rlv2Qp/how
-! Version: 202602231416
+! Checksum: 10iL4rnipW/JI0igha9WGA
+! Version: 202602231423
 ! Title: Hufilter for AdGuard
-! Last modified: 23 Feb 2026 14:16 UTC
+! Last modified: 23 Feb 2026 14:23 UTC
 ! Expires: 1 days (update frequency)
 ! Homepage: https://hufilter.hu
 ! Licence: CC-BY, see https://creativecommons.org/licenses/by/4.0/
@@ -29,7 +29,7 @@
 !-------------------------------------------------------------------------------!
 !------ Generic cosmetic filters -----------------------------------------------!
 !-------------------------------------------------------------------------------!
-##.ad__mainaaaa
+##.ad__mainaaaaa
 ##.adblokk
 ##.cikk_reklam
 ##.cikk-reklam
