@@ -1,6 +1,6 @@
 [uBlock Origin]
 ! Checksum: IyBsg5C+cGnpQxIG9VMcaw
-! Version: 202602231426
+! Version: 202602231426_test
 ! Title: Hufilter for uBO
 ! Last modified: 23 Feb 2026 14:26 UTC
 ! Expires: 1 days (update frequency)
